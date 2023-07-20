@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="hello_vscode" type="hello_vscode_c" name="hello" output="screen"/>
+	<node pkg="hello_vscode" type="hello_vscode_p.py" name="hello_py" output="screen"/>
+</launch>
