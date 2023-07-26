@@ -27,13 +27,13 @@
 */
 
 int main(int argc, char *argv[]) {
+    setlocale(LC_ALL, "");
     // 优化实现，获取命令中参数
     if (argc != 3) {
         ROS_INFO("提交的参数个数不对。");
         return 1;
     }
 
-    setlocale(LC_ALL, "");
     
     // 2. 初始化ROS节点；
     ros::init(argc, argv, "daBao");
