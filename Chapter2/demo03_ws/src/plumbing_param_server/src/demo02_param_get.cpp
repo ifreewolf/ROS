@@ -78,10 +78,56 @@ int main(int argc, char *argv[]) {
     ROS_INFO("radius 存在吗？ %d", flag1);
     ROS_INFO("radiusxxx 存在吗？ %d", flag2);
 
-    // 6. searchParam（参数1， 参数2
+    // 6. searchParam（参数1， 参数2）
     std::string key;
     nh.searchParam("type", key);
     ROS_INFO("搜索结果：%s", key.c_str());
+
+    ROS_INFO("++++++++++++++++++++++++++++++++++++++++++++++");
+    // ros::param -------------------------------------------
+    // 1. param()函数
+    double radius_param = ros::param::param("radius_param", 100.5);   // 不存在就返回默认值100.5
+    double radius_param2 = ros::param::param("radiusxx", 100.5);   // 不存在就返回默认值100.5
+    
+    ROS_INFO("radius_param = %.2f", radius_param);
+    ROS_INFO("radius_param2 = %.2f", radius_param2);
+
+    // 2. getParam()函数
+    bool flag = ros::param::get("radius_param", radius_param);
+    if (flag) {
+        ROS_INFO("radius_param = %.2f", radius_param);
+    } else {
+        ROS_INFO("未获取到参数！");
+    }
+    
+
+    // 3. getParamCached()函数
+    flag = ros::param::getCached("radius_param", radius_param);
+    if (flag) {
+        ROS_INFO("radius_param = %.2f", radius_param);
+    } else {
+        ROS_INFO("未获取到参数！");
+    }
+
+
+    // 4. getParamNames()函数
+    std::vector<std::string> names_param;
+    ros::param::getParamNames(names_param);
+    for_each(names_param.begin(), names_param.end(), [](std::string name){
+        ROS_INFO("键：%s", name.c_str());
+    });
+
+    // 5. has()判断某个键是否存在
+    flag = ros::param::has("type_param");
+    if (flag) {
+        ROS_INFO("存在参数type_param!");
+    } else {
+        ROS_ERROR("不存在参数type_param!");
+    }
+
+    // 6.searchParam(参数1，参数2)
+    ros::param::search("type_param", key);
+    ROS_INFO("搜索键：%s", key.c_str());
 
     return 0;
 }

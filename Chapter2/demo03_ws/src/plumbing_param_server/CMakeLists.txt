@@ -136,6 +136,7 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/plumbing_param_server_node.cpp)
 add_executable(demo01_param_set src/demo01_param_set.cpp)
 add_executable(demo02_param_get src/demo02_param_get.cpp)
+add_executable(demo03_param_del src/demo03_param_del.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -152,6 +153,9 @@ target_link_libraries(demo01_param_set
   ${catkin_LIBRARIES}
 )
 target_link_libraries(demo02_param_get
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(demo03_param_del
   ${catkin_LIBRARIES}
 )
 
