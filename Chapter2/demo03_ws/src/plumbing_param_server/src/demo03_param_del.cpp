@@ -33,6 +33,5 @@ int main(int argc, char *argv[])
         ROS_INFO("删除失败！");
     }
 
-
     return 0;
 }
