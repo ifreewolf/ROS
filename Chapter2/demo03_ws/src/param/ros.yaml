@@ -1,0 +1,31 @@
+age: 19
+height: 185
+name: fgs
+p_bool: true
+p_dict:
+  age: 18
+  name: hulu
+p_double: 3.14
+p_int: 100
+p_list:
+- hello
+- haha
+- xixi
+p_string: hello python
+radius: 0.2
+radius_param: 0.5
+rosdistro: 'noetic
+
+  '
+roslaunch:
+  uris:
+    host_fgs_ms_7d17__44649: http://fgs-MS-7D17:44649/
+rosversion: '1.16.0
+
+  '
+run_id: da723cac-2dfc-11ee-9c66-4186feb8d171
+turtlesim:
+  background_b: 255
+  background_g: 86
+  background_r: 69
+type_param: xiaoBai

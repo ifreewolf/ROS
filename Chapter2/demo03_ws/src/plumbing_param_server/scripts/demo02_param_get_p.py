@@ -35,7 +35,7 @@ if __name__ == "__main__":
     rospy.loginfo("name = %s, age = %d", p_dict["name"], p_dict["age"])
 
     # get_param_cached
-    int_cached = rospy.get_param_cached("p_int")
+    int_cached = rospy.get_param_cached("p_int", 25)
     rospy.loginfo("缓存的数据：%d", int_cached)
 
     # get_param_names
