@@ -135,6 +135,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(demo01_init_api src/demo01_init_api.cpp)
 add_executable(demo02_pub_api src/demo02_pub_api.cpp)
+add_executable(demo04_time_api src/demo04_time_api.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -151,6 +152,9 @@ target_link_libraries(demo01_init_api
   ${catkin_LIBRARIES}
 )
 target_link_libraries(demo02_pub_api
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(demo04_time_api
   ${catkin_LIBRARIES}
 )
 
