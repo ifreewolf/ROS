@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(plumbing_api)
+project(plumbing_head_src)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -104,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES plumbing_api
+#  LIBRARIES plumbing_head_src
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
@@ -121,9 +121,10 @@ include
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/plumbing_api.cpp
-# )
+add_library(head_src
+  include/${PROJECT_NAME}/hello.h
+  src/hello.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,10 +134,7 @@ include
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(demo01_init_api src/demo01_init_api.cpp)
-add_executable(demo02_pub_api src/demo02_pub_api.cpp)
-add_executable(demo04_time_api src/demo04_time_api.cpp)
-add_executable(hello src/hello.cpp)
+add_executable(use_hello src/use_hello.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,21 +144,18 @@ add_executable(hello src/hello.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(hello ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(head_src ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(use_hello ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(demo01_init_api
+target_link_libraries(head_src
   ${catkin_LIBRARIES}
 )
-target_link_libraries(demo02_pub_api
+target_link_libraries(use_hello
   ${catkin_LIBRARIES}
+  head_src
 )
-target_link_libraries(demo04_time_api
-  ${catkin_LIBRARIES}
-)
-target_link_libraries(hello
-  ${catkin_LIBRARIES}
-)
+
 #############
 ## Install ##
 #############
@@ -170,10 +165,11 @@ target_link_libraries(hello
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# catkin_install_python(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+catkin_install_python(PROGRAMS
+  scripts/tools.py
+  scripts/use_num.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
@@ -208,7 +204,7 @@ target_link_libraries(hello
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_plumbing_api.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_plumbing_head_src.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
