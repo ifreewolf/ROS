@@ -1,0 +1,24 @@
+bg_B: 25
+bg_G: 50
+bg_R: 100
+hello:
+  my_turtle:
+    background_b: 255
+    background_g: 86
+    background_r: 69
+    bg_B: 25
+    bg_G: 50
+    bg_R: 100
+    param_B: 3.14
+param_A: 100
+rosdistro: 'noetic
+
+  '
+roslaunch:
+  uris:
+    host_fgs_ms_7d17__35291: http://fgs-MS-7D17:35291/
+    host_fgs_ms_7d17__38545: http://fgs-MS-7D17:38545/
+rosversion: '1.16.0
+
+  '
+run_id: d681a646-3e5f-11ee-8d42-bf356a8eff99
