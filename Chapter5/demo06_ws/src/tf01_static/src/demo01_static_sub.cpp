@@ -2,6 +2,7 @@
 #include "tf2_ros/transform_listener.h"
 #include "tf2_ros/buffer.h"
 #include "geometry_msgs/PointStamped.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
 
 /**
  *  订阅方：订阅发布的坐标系相对关系，传入一个坐标点，调用 tf 实现转换
@@ -30,10 +31,57 @@ int main(int argc, char *argv[])
     tf2_ros::TransformListener listener(buffer);
 
     // 4.组织一个坐标点数据；
-    geometry
+    geometry_msgs::PointStamped ps;
+    ps.header.frame_id = "laser";
+    ps.header.stamp = ros::Time::now();
+    ps.point.x = 2.0;
+    ps.point.y = 3.0;
+    ps.point.z = 5.0;
+
+    // 添加休眠
+    // ros::Duration(1.0).sleep();
+    // ROS_INFO("等待 1 秒后开始转换");
+
     // 5.转换算法，需要调用TF内置实现；
-    // 6.最后输出。
-    
+    ros::Rate rate(10.0);
+    while (ros::ok())
+    {
+        // 核心代码实现 ---- 将 ps 转换成相对于 base_link 的坐标点
+        geometry_msgs::PointStamped ps_out;
+        /**
+         *  调用了 buffer 的转换函数 transform
+         *  参数1：被转换的坐标点
+         *  参数2：目标坐标系
+         *  返回值：输出的坐标点
+         * 
+         *  PS1：调用时必须包含头文件 tf2_geometry_msgs/tf2_geometry_msgs.h
+         *  PS2：运行时存在的问题，抛出一个异常 base_link 不存在
+         *      原因：订阅数据是一个耗时操作，可能在调用 transform 转换函数时，坐标系的相对关系还没有订阅到，因此出现异常
+         *      解决：
+         *          方案1：在调用转换函数前，执行休眠
+         *          方案2：进行异常处理 (建议)
+         *  
+        */
+        try
+        {
+            ps_out = buffer.transform(ps, "base_link");
+            ROS_INFO("转换后的坐标值：(%.2f, %.2f, %.2f), 参考的坐标系：%s",
+                    ps_out.point.x,
+                    ps_out.point.y,
+                    ps_out.point.z,
+                    ps_out.header.frame_id.c_str()
+                    );
+        }
+        catch(const std::exception& e)
+        {
+            ROS_INFO("异常消息：%s", e.what());
+        }
+        
+
+        // 6.最后输出。
+        rate.sleep();
+        ros::spinOnce();
+    }
     return 0;
 }
 
