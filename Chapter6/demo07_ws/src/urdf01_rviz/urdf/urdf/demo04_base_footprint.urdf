@@ -1,14 +1,26 @@
 <!-- 需求：设置机器人底盘，并添加摄像头 -->
 <robot name="my_car">
+    <!-- 0.base_footprint -->
+    <!-- 添加一个尺寸极小的 link，
+    再去关联初始link 与 base_link,
+    关节的高度刚好和base_link下沉的高度一致(半个底盘高度) -->
+    <link name="base_footprint">
+        <visual>
+            <geometry>
+                <box size="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+    </link>
+
     <!-- 1.底盘link -->
     <link name="base_link">
         <visual>
             <geometry>
                 <box size="0.3 0.2 0.1" />
             </geometry>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0" />
             <material name="car_color">
-                <color rgba="0.8 0.5 0 0.5"/>
+                <color rgba="0.8 0.5 0 0.5" />
             </material>
         </visual>
     </link>
@@ -22,12 +34,19 @@
             <!-- 先使用默认(后期需要修改) -->
             <!-- 为什么是0.025，因为关节中心点距离父级link的中心刚好是父级link高度的一半，子级link的中心点距离关机的中心点，
             默认是0，所以会出现子级link半沉在父级link中，加上子级高度的一半偏移之后就可以正常了。-->
-            <origin xyz="0 0 0.025" rpy="0 0 0"/>
+            <origin xyz="0 0 0.025" rpy="0 0 0" />
             <material name="camera_color">
                 <color rgba="0 0 1 0.5"/>
             </material>
         </visual>
     </link>
+
+    <!-- 3.1 basefootprint2base_link -->
+    <joint name="base_link2base_footprint" type="fixed">
+        <parent link="base_footprint" />
+        <child link="base_link" />
+        <origin xyz="0 0 0.05" rpy="0 0 0" />
+    </joint>
 
     <!-- 3.关节 -->
     <joint name="camera2base" type="continuous">
