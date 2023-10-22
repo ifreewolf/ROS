@@ -1,4 +1,4 @@
-<robot name="mycar" xmlns:xacro="http://wiki.ros.org/xacro">
+<robot name="mycar" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:property name="footprint_radius" value="0.001" />
     <!-- 1.添加base_footprint -->
@@ -20,7 +20,7 @@
     <xacro:property name="base_radius" value="0.1" />
     <xacro:property name="base_length" value="0.08" />
     <xacro:property name="lidi" value="0.015" />
-    <xacro:property name="base_joint_z" value="" />
+    <xacro:property name="base_joint_z" value="${base_length / 2 + lidi}" />
     <!-- 2-1.link -->
     <link name="base_link">
         <visual>
@@ -55,9 +55,15 @@
      -->
     <xacro:property name="wheel_radius" value="0.0325" />
     <xacro:property name="wheel_length" value="0.015" />
+    <xacro:property name="PI" value="3.1415927" />
+    <xacro:property name="wheel_joint_z" value="${(base_length / 2 + lidi - wheel_radius)*-1}" />
+
+    <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0" />
+    </material>
     <!-- 驱动轮宏实现 -->
-    <xacro:macro name="add_wheels" params="name flag">
-        <link name="${name}_wheel">
+    <xacro:macro name="wheel_func" params="wheel_name flag">
+        <link name="${wheel_name}_wheel">
             <visual>
                 <geometry>
                     <cylinder radius="${wheel_radius}" length="${wheel_length}" />
@@ -66,54 +72,58 @@
                 <material name="black" />
             </visual>
         </link>
-        <joint name="${name}2base" type="continuous">
+        <joint name="${wheel_name}2link" type="continuous">
             <parent link="base_link" />
-            <child link="${name}_wheel" />
+            <child link="${wheel_name}_wheel" />
             <!-- 
                 x 无偏移
                 y 车体的半径
                 z =车体高度 / 2 + 离地间距 - 车轮半径=0.055-0.0325=0.0255m
             -->
-            <origin xyz="0.0 ${flag * base_radius} ${-(lidi + )}" rpy="0.0 0.0 0.0" />
+            <origin xyz="0.0 ${flag * 0.1} ${wheel_joint_z}" rpy="0.0 0.0 0.0" />
             <axis xyz="0 1 0" />
         </joint>
     </xacro:macro>
-    <!-- 3-1.link -->
 
-    <link name="right_wheel">
-        <visual>
-            <geometry>
-                <cylinder radius="0.0325" length="0.015" />
-            </geometry>
-            <origin xyz="0.0 0.0 0.0" rpy="1.5708 0.0 0.0" />
-            <material name="right_wheel_color">
-                <color rgba="0.0 0.0 0.0 0.3" />
-            </material>
-        </visual>
-    </link>
-    <!-- 3-2.joint -->
-    <joint name="left2link" type="continuous">
-        <parent link="base_link" />
-        <child link="left_wheel" />
-        <!-- 
-            x 无偏移
-            y 车体的半径
-            z =车体高度 / 2 + 离地间距 - 车轮半径=0.055-0.0325=0.0255m
-         -->
-        <origin xyz="0.0 0.1 -0.0255" rpy="0.0 0.0 0.0" />
-        <axis xyz="0 1 0" />
-    </joint>
-    <joint name="right2link" type="continuous">
-        <parent link="base_link" />
-        <child link="right_wheel" />
-        <!-- 
-            x 无偏移
-            y 车体的半径
-            z =车体高度 / 2 + 离地间距 - 车轮半径=0.055-0.0325=0.0255m
-         -->
-        <origin xyz="0.0 -0.1 -0.0255" rpy="0.0 0.0 0.0" />
-        <axis xyz="0 1 0" />
-    </joint>
+    <xacro:wheel_func wheel_name="left" flag="1" />
+    <xacro:wheel_func wheel_name="right" flag="-1" />
 
 
+    <!-- 4.添加万向轮 -->
+    <!-- 
+        形状：球
+        半径： 0.0075m
+     -->
+    <xacro:property name="small_wheel_radius" value="0.0075" />
+    <!-- Z的偏移量 = 车体高度 / 2 + 离地间距 - 万向轮半径 -->
+    <xacro:property name="small_joint_z" value="${(base_length / 2 + lidi - small_wheel_radius) * -1}" />
+    <xacro:macro name="small_wheel_func" params="small_wheel_name flag">
+        <link name="${small_wheel_name}_wheel">
+            <visual>
+                <geometry>
+                    <sphere radius="${small_wheel_radius}" />
+                </geometry>
+                <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+                <material name="small_wheel_color">
+                    <color rgba="0.0 0.0 0.0 0.3" />
+                </material>
+            </visual>
+        </link>
+        <!-- 4-2.joint -->
+        <joint name="${small_wheel_name}2link" type="continuous">
+            <parent link="base_link" />
+            <child link="${small_wheel_name}_wheel" />
+            <!-- 
+                x < 车体的半径
+                y = 0
+                z = 0.055 - 0.0075 = 0.0475
+            -->
+            <origin xyz="${flag * 0.08} 0 ${small_joint_z}" rpy="0.0 0.0 0.0" />
+            <axis xyz="0 1 0" />
+        </joint>
+    </xacro:macro>
+
+    <xacro:small_wheel_func small_wheel_name="front" flag="1" />
+    <xacro:small_wheel_func small_wheel_name="back" flag="-1" />
+    
 </robot>
