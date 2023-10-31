@@ -1,7 +1,14 @@
-image: /home/fgs/Workstation/ROS/Chapter7/demo08_ws/src/nav_demo/map/nav.pgm
-resolution: 0.050000
-origin: [-50.000000, -50.000000, 0.000000]
+# 1. 声明地图图片资源的路径
+image: /home/fgs/Workstations/ROS/Chapter7/demo08_ws/src/nav_demo/map/nav.pgm
+# 2. 地图刻度尺，单位是m/像素
+resolution: 0.100000
+# 3. 地图的位姿（相对于rviz中的原点的位姿）x偏移量 y偏移量 偏航角度
+# origin: [-50.000000, -50.000000, 0.000000]
+origin: [0.000000, 0.000000, 0.000000]
+# 4. 是否取反
 negate: 0
+# 5. 占用阈值
 occupied_thresh: 0.65
+# 6.空闲阈值
 free_thresh: 0.196
 
