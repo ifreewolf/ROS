@@ -1,4 +1,4 @@
-#include "ris/ros.h"
+#include "ros/ros.h"
 #include "actionlib/server/simple_action_server.h"
 #include "demo01_action/AddIntsAction.h"
 
@@ -19,7 +19,7 @@
         6. spin()回旋。
 */
 
-typedef actionlib::SimpleActionSever<demo01_action::AddIntsAction> Server;
+typedef actionlib::SimpleActionServer<demo01_action::AddIntsAction> Server;
 
 // 5. 请求处理(a.解析提交的目标值；b.产生连续反馈；c.最终结果响应) --- 回调函数；
 void cb(const demo01_action::AddIntsGoalConstPtr &goalPtr, Server* server) {
@@ -30,7 +30,22 @@ void cb(const demo01_action::AddIntsGoalConstPtr &goalPtr, Server* server) {
     // b. 产生连续反馈;
     ros::Rate rate(10); // 10 Hz
     int result = 0;
+    for (int i = 1; i <= goal_num; ++i) {
+        // 累加
+        result += i;
+        // 休眠
+        rate.sleep();
+        // 产生连续反馈
+        // void publishFeedback(const demo01_action::AddIntsFeedback &feedback)
+        demo01_action::AddIntsFeedback fb;
+        fb.progress_bar = i / (double)goal_num;
+        server->publishFeedback(fb);
+    }
+
     // c. 最终结果响应
+    demo01_action::AddIntsResult res;
+    res.result = result;
+    server->setSucceeded(res);
 }
 
 int main(int argc, char *argv[])
@@ -54,8 +69,9 @@ int main(int argc, char *argv[])
         参数3：回调函数
         参数4：是否自动启动
     */
-    Server server(nh, "addInts", boost::bind(&cb, _1, &server), false);
+    Server server(nh, "addInts", boost::bind(&cb, _1, &server), false); // _1是一个占位符，表示这个参数回调的时候会系统自动帮忙传入
     server.start(); // 如果 auto_start 为 false，那么需要手动调用该函数启动服务
+    ROS_INFO("服务启动.....");
 
     // 6. spin()回旋。
     ros::spin();
