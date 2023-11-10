@@ -1,0 +1,13 @@
+<launch>
+    <!-- 1. 启动 nodelet manager 管理器 -->
+    <node pkg="nodelet" type="nodelet" args="manager" name="dasun" output="screen" />
+    <!-- 2. 添加节点 xiaowang，参数是 100 -->
+    <node pkg="nodelet" type="nodelet" args="load demo04_nodelet/MyPlus dasun" name="xiaowang" output="screen">
+        <param name="value" value="10" />
+    </node>
+    <!-- 3. 添加节点 ergou，参数是 -50，xiaowang的输出作为ergou的输入  -->
+    <node pkg="nodelet" type="nodelet" args="load demo04_nodelet/MyPlus dasun" name="ergou" output="screen">
+        <param name="value" value="-50" />
+        <remap from="/ergou/in" to="/xiaowang/out" />
+    </node>
+</launch>
